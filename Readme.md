@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url]
 
 * Студент: [Дмитрий Бабин](https://up.htmlacademy.ru/javascript/19/user/1091919).
-* Наставник: `Неизвестно`.
+* Наставник: `Роман Духницький`.
 
 ---
 
