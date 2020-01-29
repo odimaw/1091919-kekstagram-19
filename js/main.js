@@ -31,9 +31,9 @@ var pictureUserTemplate = document.querySelector('#picture')
 
 var arrayUsers = [];
 
-for (var i = 1; i < 26; i++) {
+for (var i = 0; i < 25; i++) {
   arrayUsers[i] = {
-    url: 'photos/' + i + '.jpg',
+    url: 'photos/' + (i + 1) + '.jpg',
     description: 0,
     likes: getRandomInRange(15, 200),
     comments: function () {
@@ -58,7 +58,7 @@ var renderFoto = function (namber) {
 
 var fragment = document.createDocumentFragment();
 
-for (var j = 1; j < 26; j++) {
+for (var j = 0; j < 25; j++) {
   fragment.appendChild(renderFoto(j));
 }
 
