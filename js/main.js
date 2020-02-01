@@ -40,7 +40,11 @@ for (var i = 0; i < 25; i++) {
       var quantityComments = getRandomInRange(1, 5);
       var arrayComments = [];
       for (var z = 0; z < quantityComments; z++) {
-        arrayComments[z] = messages[getRandomInRange(0, 5)];
+        arrayComments[z] = {
+          avatar: 'img/avatar-' + getRandomInRange(1, 6) + '.svg',
+          messages: messages[getRandomInRange(0, 5)],
+          name: names[getRandomInRange(0, 6)],
+        };
       }
       return arrayComments;
     },
@@ -71,9 +75,9 @@ var socialComment = bigPictureUsers.querySelector('.social__comment');
 
 var renderComment = function (avatarCommit) {
   var userSocialCommit = socialComment.cloneNode(true);
-  userSocialCommit.querySelector('img').src = 'img/avatar-' + (avatarCommit + 1) + '.svg';
-  userSocialCommit.querySelector('img').alt = names[getRandomInRange(0, 6)];
-  userSocialCommit.querySelector('.social__text').textContent = resultArrayComment[avatarCommit];
+  userSocialCommit.querySelector('img').src = resultArrayComment[avatarCommit].avatar;
+  userSocialCommit.querySelector('img').alt = resultArrayComment[avatarCommit].name;
+  userSocialCommit.querySelector('.social__text').textContent = resultArrayComment[avatarCommit].messages;
   return userSocialCommit;
 };
 
