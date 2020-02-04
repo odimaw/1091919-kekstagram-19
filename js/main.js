@@ -31,23 +31,25 @@ var pictureUserTemplate = document.querySelector('#picture')
 
 var arrayUsers = [];
 
+var renderArrayComments = function () {
+  var quantityComments = getRandomInRange(1, 5);
+  var arrayComments = [];
+  for (var z = 0; z < quantityComments; z++) {
+    arrayComments[z] = {
+      avatar: 'img/avatar-' + getRandomInRange(1, 6) + '.svg',
+      messages: messages[getRandomInRange(0, 5)],
+      name: names[getRandomInRange(0, 6)],
+    };
+  }
+  return arrayComments;
+};
+
 for (var i = 0; i < 25; i++) {
   arrayUsers[i] = {
     url: 'photos/' + (i + 1) + '.jpg',
     description: '',
     likes: getRandomInRange(15, 200),
-    comments: function () {
-      var quantityComments = getRandomInRange(1, 5);
-      var arrayComments = [];
-      for (var z = 0; z < quantityComments; z++) {
-        arrayComments[z] = {
-          avatar: 'img/avatar-' + getRandomInRange(1, 6) + '.svg',
-          messages: messages[getRandomInRange(0, 5)],
-          name: names[getRandomInRange(0, 6)],
-        };
-      }
-      return arrayComments;
-    },
+    comments: renderArrayComments,
     name: names[getRandomInRange(0, 6)]
   };
 }
