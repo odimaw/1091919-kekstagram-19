@@ -122,6 +122,8 @@ var effectLevelPin = document.querySelector('.effect-level__pin');
 var effectLevelValue = document.querySelector('.effect-level__value');
 var imgUploadPreviewImg = document.querySelector('.img-upload__preview').querySelector('img');
 
+// Как правильно "обнулить" данные при закрытии? Ниже написаны два блока кода, чтобы при закрытии и повторном открытии данные не сохранялись.
+
 var onImgUploadClick = function () {
   imgUploadOverlay.classList.add('hidden');
   document.querySelector('body').classList.remove('modal-open');
@@ -148,7 +150,7 @@ var onImgUploadKeydown = function () {
 
 var onUploadFileClick = function () {
   imgUploadOverlay.classList.remove('hidden');
-  document.querySelector('body').classList.add('modal-open');
+  document.querySelector('body').classList.add('modal-open'); //Что делает класс 'modal-open'? Это чтобы окно не двигалось при прокручивание колесика?
   uploadCancel.addEventListener('click', onImgUploadClick);
   imgUpload.addEventListener('keydown', onKeydownEsc);
 };
@@ -193,6 +195,7 @@ scaleControlBigger.addEventListener('click', function () {
 
 var onEffectRadios = function (evt) {
   filterValue = evt.target.value;
+  // Можно ли так обновлять классы? Если я просто добавлю один класс, то при каждом нажатие количество классов будет увеличиваться?
   imgUploadPreview.classList = 'img-upload__preview effects__preview--' + filterValue;
   if (filterValue === 'none') {
     imgUploadPreviewImg.removeAttribute('style');
@@ -324,4 +327,92 @@ textHashtags.addEventListener('click', onImgUploadKeydownClick);
 textHashtags.addEventListener('keydown', onImgUploadKeydownKeydown);
 
 textHashtags.addEventListener('focusout', onFocusoutClick);
+
+// Просмотр любой фотографии в полноразмерном режиме.
+
+var bigPicture = document.querySelector('.big-picture');
+var bigPictureImg = bigPicture.querySelector('.big-picture__img').querySelector('img');
+var socialCaption = bigPicture.querySelector('.social__caption');
+var likesCount = bigPicture.querySelector('.likes-count');
+var socialCommentCount = bigPicture.querySelector('.social__comment-count');
+var bigPictureCancel = bigPicture.querySelector('#picture-cancel');
+var socialCommentsBigPicture = bigPicture.querySelector('.social__comments');
+var ENTER_KEY = 'Enter';
+
+// Ниже, я запутался с "магическими кнопками". Сколько, по количеству, должно быть функций что бы при нажатие открывалась фотография?
+// На клавиши и на мышку нужны отдельные функции? И могут ли они в итоге соединяться к одной, где и будет весь код: открытия-закрытия?
+// Или нужно что бы функции на мышку и кнопки вообще не пересекались?
+// Вроде все работает но как то запутанно и много дублирующего кода.
+// И не получилось сделать чтоб от ENTER_KEY = 'Enter' открывалась фотография.
+var bigPictureRemoveHidden = function () {
+  bigPicture.classList.remove('hidden');
+};
+
+var onButtonBigPictureCancelClick = function () {
+  bigPicture.classList.add('hidden');
+  document.removeEventListener('keydown', onButtonBigPictureCancelKeydown);
+  bigPictureCancel.removeEventListener('click', onButtonBigPictureCancelClick);
+  document.addEventListener('click', onFullScreenViewing);
+};
+
+var onButtonBigPictureCancelKeydown = function (evt) {
+  if (evt.key === ESC_KEY) {
+    bigPicture.classList.add('hidden');
+  }
+  bigPictureCancel.removeEventListener('click', onButtonBigPictureCancelClick);
+  document.removeEventListener('keydown', onButtonBigPictureCancelKeydown);
+  document.addEventListener('click', onFullScreenViewing);
+};
+
+var onFullScreenViewing = function (evt) {
+  if (evt.target.classList.contains('picture__img')) {
+    var selectedImage = evt.target.src;
+    for (var k = 0; k < 25; k++) {
+      // Как правильно сделать проверку в этом месте?
+      // Я хотел найти объект на который нажал пользователь. И придумал искать по названиию ссылки.
+      if (selectedImage == 'file:///C:/Users/dimar/Desktop/kekstagram/1091919-kekstagram-19/' + arrayUsers[k].url) {
+        socialCaption.textContent = arrayUsers[k].description;
+        likesCount.textContent = arrayUsers[k].likes;
+        socialCommentCount.textContent = arrayUsers[k].comments().length;  // Как вставить текст, потом тег с текстом, а потом опять текст?
+      }
+    }
+
+    var fragment2 = document.createDocumentFragment();
+    for (var c = 0; c < resultArrayComment.length; c++) {
+      fragment2.appendChild(renderComment(c));
+    }
+    socialCommentsBigPicture.appendChild(fragment2);
+
+    bigPictureImg.src = selectedImage;
+    bigPictureRemoveHidden();
+    bigPictureCancel.addEventListener('click', onButtonBigPictureCancelClick);
+    document.addEventListener('keydown', onButtonBigPictureCancelKeydown);
+    document.removeEventListener('click', onFullScreenViewing);
+  }
+};
+
+document.addEventListener('click', onFullScreenViewing);
+
+// Потеря фокуса на social__footer-text.
+// Правильно ли количество фукнций и их названия? Получается что и по клавиатуре и по кнопке запускается одна и таже функция.
+
+var socialFooterText = bigPicture.querySelector('.social__footer-text');
+
+var onInputSocialFooterTextClick = function () {
+  document.removeEventListener('keydown', onButtonBigPictureCancelKeydown);
+};
+
+var onInputSocialFooterTextKeydown = function () {
+  document.removeEventListener('keydown', onButtonBigPictureCancelKeydown);
+};
+
+var onInputSocialFooterTextFocusoutClick = function () {
+  document.addEventListener('keydown', onButtonBigPictureCancelKeydown);
+};
+
+socialFooterText.addEventListener('click', onInputSocialFooterTextClick);
+
+socialFooterText.addEventListener('keydown', onInputSocialFooterTextKeydown);
+
+socialFooterText.addEventListener('focusout', onInputSocialFooterTextFocusoutClick);
 
